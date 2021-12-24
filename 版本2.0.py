@@ -8,17 +8,17 @@ from PySide2.QtGui import QIcon,QPixmap,QPalette,QBrush
 import pygame as pg
 def guyinyue():
     import pygame  # 导入pygame资源包
-    file2 = r'data/古风.mp3'  # 音乐的路径
+    file2 = r'版本2.0的数据文件/古风.mp3'  # 音乐的路径
     pygame.mixer.init()  # 初始化
     track = pygame.mixer.music.load(file2)  # 加载音乐文件
     pygame.mixer.music.play()  # 开始播放音乐流
 class UI_interface:#ui界面和游戏界面
     def __init__(self):
-        self.ui = QUiLoader().load(r"data/1.6ui.ui")#加载ui
+        self.ui = QUiLoader().load(r"版本2.0的数据文件/1.6ui.ui")#加载ui
         self.window=QMainWindow()
         self.ui.setWindowTitle('五子棋')
         palette = QPalette()
-        palette.setBrush(QPalette.Window,QBrush(QPixmap(r'data/1.3.jpg')))#加载第一界面背景
+        palette.setBrush(QPalette.Window,QBrush(QPixmap(r'版本2.0的数据文件/1.3.jpg')))#加载第一界面背景
         self.ui.setPalette(palette)
         # url = QUrl.fromLocalFile(r"C:\Users\Kyle Zhou\Downloads\13286.wav")#导入古筝音乐
         # content = QMediaContent(url)
@@ -33,7 +33,7 @@ class UI_interface:#ui界面和游戏界面
     def play_game(self):#游戏开始按钮函数
         box = QMessageBox()#弹出游戏模式选择按钮
         box.setWindowTitle('游戏模式')
-        box.setIconPixmap(QPixmap(r"data\运行.png").scaled(100, 100))
+        box.setIconPixmap(QPixmap(r"版本2.0的数据文件\运行.png").scaled(100, 100))
         box.setText('<h3>请选择游戏模式</h3>')
         reply=box.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
         buttonY = box.button(QMessageBox.Yes)
@@ -51,7 +51,7 @@ class UI_interface:#ui界面和游戏界面
                     '一种是双方分别使用黑白两色的棋子，下在棋盘直线与横线的交叉点上，先形成五子连线者获胜。还有一种是自己形成五子连线就替换对方任意一枚棋子。'
                     '被替换的棋子可以和对方交换棋子。最后以先出完所有棋子的一方为胜。五子棋容易上手，老少皆宜，而且趣味横生，引人入胜：'
                     '它不仅能增强思维能力，提高智力，而且富含哲理，有助于修身养性。')
-        box.setIconPixmap(QPixmap(r"data\游戏简介图标-01.png").scaled(90,90))
+        box.setIconPixmap(QPixmap(r"版本2.0的数据文件\游戏简介图标-01.png").scaled(90,90))
         box.setWindowTitle('游戏简介')
         box.setStandardButtons(QMessageBox.Yes)
         box.button(QMessageBox.Yes).setText('好的')
@@ -68,7 +68,7 @@ class UI_interface:#ui界面和游戏界面
         马驰宇：文档编写(算法设计文档、软件原型图)\n\
         舒叶：文档编写(算法接口文档)\n" )
 
-        box.setIconPixmap(QPixmap(r"data\关于我们.png").scaled(100, 100))
+        box.setIconPixmap(QPixmap(r"版本2.0的数据文件\关于我们.png").scaled(100, 100))
         box.setStandardButtons(QMessageBox.Yes)
         box.button(QMessageBox.Yes).setText('好的')
         box.exec_()#等待用户选择按钮
@@ -76,7 +76,7 @@ class UI_interface:#ui界面和游戏界面
     def quit(self):#退出游戏按钮
         box = QMessageBox()
         box.setWindowTitle('警告!')
-        box.setIconPixmap(QPixmap(r"data\警告.png").scaled(70, 70))
+        box.setIconPixmap(QPixmap(r"版本2.0的数据文件\警告.png").scaled(70, 70))
         box.setText('<h3>确认退出游戏？</h3>')
         reply = box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         buttonY = box.button(QMessageBox.Yes)
@@ -188,12 +188,12 @@ class UI_interface:#ui界面和游戏界面
         class Gomoku:
             def __init__(s):
                 pg.init()
-                s.gun_sound = pg.mixer.Sound("data/落子音效.mp3")
+                s.gun_sound = pg.mixer.Sound("版本2.0的数据文件/落子音效.mp3")
                 s.gun_sound.set_volume(4)
-                s.win_sound = pg.mixer.Sound("data/victory.mp3")
+                s.win_sound = pg.mixer.Sound("版本2.0的数据文件/victory.mp3")
                 s.win_sound.set_volume(4)
                 s.just_one=1
-                s.surface=pg.image.load(r"data\多人游戏2.png")
+                s.surface=pg.image.load(r"版本2.0的数据文件\多人游戏2.png")
                 pg.display.set_icon(s.surface)
                 s.screen = pg.display.set_mode((1040, 820))
                 pg.display.set_caption("五子棋对战")
@@ -225,7 +225,7 @@ class UI_interface:#ui界面和游戏界面
                         time.sleep(0.5)
                         box=QMessageBox()
                         box.setWindowTitle('游戏结束')
-                        box.setIconPixmap(QPixmap(r"data\奖杯，胜利，赢了，完成，比赛.png").scaled(50,50))
+                        box.setIconPixmap(QPixmap(r"版本2.0的数据文件\奖杯，胜利，赢了，完成，比赛.png").scaled(50,50))
                         if s.chessboard.winner=="white":
                             s.chessboard.winner="白棋"
                         if s.chessboard.winner=="black":
@@ -242,7 +242,7 @@ class UI_interface:#ui界面和游戏界面
                 pg.quit()
         def yinyue():
             import pygame  # 导入pygame资源包
-            file1 = r'data/bgm.mp3'  # 音乐的路径
+            file1 = r'版本2.0的数据文件/bgm.mp3'  # 音乐的路径
             pygame.mixer.init()  # 初始化
             track = pygame.mixer.music.load(file1)  # 加载音乐文件
             pygame.mixer.music.play()  # 开始播放音乐流
@@ -253,7 +253,7 @@ class UI_interface:#ui界面和游戏界面
             game.loop()
 
 app = QApplication([])
-app.setWindowIcon(QIcon(r"data\小棋盘.png"))
+app.setWindowIcon(QIcon(r"=版本2.0的数据文件\小棋盘.png"))
 stats = UI_interface()
 stats.ui.show()
 app.exec_()
