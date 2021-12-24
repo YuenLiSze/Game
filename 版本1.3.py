@@ -5,7 +5,7 @@ from PyQt5.QtCore import QCoreApplication
 import pygame as pg
 class Stats:
     def __init__(self):
-        self.ui = QUiLoader().load(r"ui.ui")
+        self.ui = QUiLoader().load(r"1.3ui.ui")
         self.window=QMainWindow()
         self.ui.setWindowTitle('五子棋')
         palette = QPalette()
