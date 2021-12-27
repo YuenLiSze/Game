@@ -1,6 +1,13 @@
+"""五子棋之人机对战"""
+
 import sys
 import random
 import pygame
+from PySide2.QtMultimedia import QMediaPlayer
+from PySide2.QtCore import QUrl
+from PySide2.QtGui import QPixmap
+from PySide2.QtMultimedia import QMediaContent
+from PySide2.QtWidgets import QMessageBox
 from pygame.locals import *
 import pygame.gfxdraw
 from collections import namedtuple
@@ -12,7 +19,7 @@ BLACK_CHESSMAN = Chessman('黑子', 1, (45, 45, 45))
 WHITE_CHESSMAN = Chessman('白子', 2, (219, 219, 219))
 
 offset = [(1, 0), (0, 1), (1, 1), (1, -1)]
-
+s_just_one=1
 class Checkerboard:
     def __init__(self, line_points):
         self._line_points = line_points
@@ -39,7 +46,7 @@ class Checkerboard:
 
         if self._win(point):
             print(f'{chessman.Name}获胜')
-            return chessman
+            return chessman.Name
 
     # 判断是否赢了
     def _win(self, point):
@@ -71,12 +78,12 @@ class Checkerboard:
 SIZE = 45  # 棋盘每个点之间的间隔
 Line_Points = 19  # 棋盘每行/每列点数
 Outer_Width = 40  # 棋盘外宽度
-Border_Width = 4  # 边框宽度
+Border_Width = 3  # 边框宽度
 Inside_Width = 4  # 边框跟实际的棋盘之间的间隔
 Border_Length = SIZE * (Line_Points - 1) + Inside_Width * 2 + Border_Width  # 边框线的长度
 Start_X = Start_Y = Outer_Width + int(Border_Width / 2) + Inside_Width  # 网格线起点（左上角）坐标
-SCREEN_HEIGHT = SIZE * (Line_Points - 2) + Outer_Width * 5 + Border_Width + Inside_Width * 5  # 游戏屏幕的高
-SCREEN_WIDTH = SCREEN_HEIGHT-20   # 游戏屏幕的宽
+SCREEN_HEIGHT = SIZE * (Line_Points - 3) + Outer_Width * 5 + Border_Width + Inside_Width * 5  # 游戏屏幕的高
+SCREEN_WIDTH = SCREEN_HEIGHT-7   # 游戏屏幕的宽
 
 Stone_Radius = SIZE // 2 - 3  # 棋子半径
 Stone_Radius2 = SIZE // 2 + 3
@@ -95,6 +102,11 @@ def print_text(screen, font, x, y, text, fcolor=(255, 255, 255)):
 
 
 def main1():
+    global s_just_one
+    gun_sound = pygame.mixer.Sound("data/落子音效.mp3")  # 人人模式落子音乐
+    gun_sound.set_volume(4)  # 设置落子音效的音量
+    win_sound = pygame.mixer.Sound("data/victory.mp3")  # 最终胜利时的音效
+    win_sound.set_volume(4)  # 设置胜利音效的音量
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))#游戏屏幕的宽和高
     pygame.display.set_caption('五子棋')
@@ -114,7 +126,7 @@ def main1():
     while True:
         for event in pygame.event.get():#遍历每一个步骤
             if event.type == QUIT: #如果游戏结束，退出循环
-                sys.exit()
+                pygame.quit()
             elif event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     if winner is not None:
@@ -123,6 +135,7 @@ def main1():
                         checkerboard = Checkerboard(Line_Points)
                         computer = AI(Line_Points, WHITE_CHESSMAN)
             elif event.type == MOUSEBUTTONDOWN:  #如果鼠标继续落子
+                gun_sound.play()
                 if winner is None:
                     pressed_array = pygame.mouse.get_pressed()
                     if pressed_array[0]:
@@ -157,8 +170,31 @@ def main1():
 
         # _draw_left_info(screen, font1, cur_runner, black_win_count, white_win_count)
 
-        if winner:
-            print_text(screen, font2, (SCREEN_WIDTH - fwidth)//2, (SCREEN_HEIGHT - fheight)//2, winner.Name + '获胜', RED_COLOR)
+        if winner and s_just_one == 1:
+            s_just_one = 0
+            url = QUrl.fromLocalFile(r"data/victory.mp3")
+            content = QMediaContent(url)
+            player = QMediaPlayer()
+            player.setMedia(content)  # 游戏胜利音效
+            player.play()
+            box = QMessageBox()
+            box.setWindowTitle('游戏结束')
+            box.setStyleSheet("QLabel{"
+                              "min-width:140px;"
+                              "min-height:80px; "
+                              "font-size:22px;"
+                              "}")
+            box.setIconPixmap(QPixmap(r"data/奖杯，胜利，赢了，完成，比赛.png").scaled(50, 50))
+            if winner == "白子":
+                winner = '白棋'
+            if winner == "黑子":
+                winner = '黑棋'
+            box.setText('<h3>{}获胜!!!</h3>'.format(winner))
+            box.setStandardButtons(QMessageBox.Yes)
+            buttonY = box.button(QMessageBox.Yes)
+            buttonY.setText('好的')
+            buttonY.setStyleSheet("QPushButton:hover {color: black ;font-size:25px;}")
+            box.exec_()
 
         pygame.display.flip()
 
@@ -421,6 +457,13 @@ class AI:
         else:
             return 0
 
+def yinyue():
+    import pygame  # 导入pygame资源包
+    file1 = r'data/bgm.mp3'  # 音乐的路径
+    pygame.mixer.init()  # 初始化
+    track = pygame.mixer.music.load(file1)  # 加载音乐文件
+    pygame.mixer.music.play()  # 开始播放音乐流
 
 if __name__ == '__main__':
+    yinyue()
     main1()
