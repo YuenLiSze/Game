@@ -209,7 +209,9 @@ def _get_next(cur_runner):
 # 画棋盘
 def _draw_checkerboard(screen):
     # 填充棋盘背景色
-    screen.fill(Checkerboard_Color)
+    bg = pygame.image.load(r"版本2.0的数据文件/1.jp.jpg")
+    screen.blit(bg, (0, 0))
+    #screen.fill(Checkerboard_Color)
     # 画棋盘网格线外的边框
     pygame.draw.rect(screen, BLACK_COLOR, (Outer_Width, Outer_Width, Border_Length, Border_Length), Border_Width)
     # 画网格线
