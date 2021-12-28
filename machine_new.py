@@ -16,10 +16,36 @@ Chessman = namedtuple('Chessman', 'Name Value Color')
 Point = namedtuple('Point', 'X Y')
 
 BLACK_CHESSMAN = Chessman('黑子', 1, (45, 45, 45))
-WHITE_CHESSMAN = Chessman('白子', 2, (219, 219, 219))
+WHITE_CHESSMAN = Chessman('白子', 2, (255, 255, 255))
 
 offset = [(1, 0), (0, 1), (1, 1), (1, -1)]
 s_just_one=1
+SIZE = 45  # 棋盘每个点之间的间隔
+Line_Points = 19  # 棋盘每行/每列点数
+Outer_Width = 40  # 棋盘外宽度
+Border_Width = 3  # 边框宽度
+Inside_Width = 4  # 边框跟实际的棋盘之间的间隔
+Border_Length = SIZE * (Line_Points - 1) + Inside_Width * 2 + Border_Width  # 边框线的长度
+Start_X = Start_Y = 46  # 网格线起点（左上角）坐标
+SCREEN_HEIGHT = SIZE * (Line_Points - 3) + Outer_Width * 5 + Border_Width + Inside_Width * 5  # 游戏屏幕的高
+SCREEN_WIDTH = SCREEN_HEIGHT-7   # 游戏屏幕的宽
+
+Stone_Radius = SIZE // 2 - 3  # 棋子半径
+Stone_Radius2 = SIZE // 2 + 3
+Checkerboard_Color = (0xE3, 0x92, 0x65)  # 棋盘颜色
+BLACK_COLOR = (0, 0, 0)
+WHITE_COLOR = (255, 255, 255)
+RED_COLOR = (200, 30, 30)
+BLUE_COLOR = (30, 30, 200)
+
+RIGHT_INFO_POS_X = SCREEN_HEIGHT + Stone_Radius2 * 2 + 10
+list1=[]
+for i in range(Line_Points):
+    for j in range(Line_Points):
+        map=[Start_Y+i*SIZE,Start_X+j*SIZE]
+        list1.append(map)
+x_new,y_new=0,0
+
 class Checkerboard:
     def __init__(self, line_points):
         self._line_points = line_points
@@ -75,26 +101,6 @@ class Checkerboard:
         return count >= 5
 
 
-SIZE = 45  # 棋盘每个点之间的间隔
-Line_Points = 19  # 棋盘每行/每列点数
-Outer_Width = 40  # 棋盘外宽度
-Border_Width = 3  # 边框宽度
-Inside_Width = 4  # 边框跟实际的棋盘之间的间隔
-Border_Length = SIZE * (Line_Points - 1) + Inside_Width * 2 + Border_Width  # 边框线的长度
-Start_X = Start_Y = Outer_Width + int(Border_Width / 2) + Inside_Width  # 网格线起点（左上角）坐标
-SCREEN_HEIGHT = SIZE * (Line_Points - 3) + Outer_Width * 5 + Border_Width + Inside_Width * 5  # 游戏屏幕的高
-SCREEN_WIDTH = SCREEN_HEIGHT-7   # 游戏屏幕的宽
-
-Stone_Radius = SIZE // 2 - 3  # 棋子半径
-Stone_Radius2 = SIZE // 2 + 3
-Checkerboard_Color = (0xE3, 0x92, 0x65)  # 棋盘颜色
-BLACK_COLOR = (0, 0, 0)
-WHITE_COLOR = (255, 255, 255)
-RED_COLOR = (200, 30, 30)
-BLUE_COLOR = (30, 30, 200)
-
-RIGHT_INFO_POS_X = SCREEN_HEIGHT + Stone_Radius2 * 2 + 10
-
 
 def print_text(screen, font, x, y, text, fcolor=(255, 255, 255)):
     imgText = font.render(text, True, fcolor)
@@ -102,7 +108,7 @@ def print_text(screen, font, x, y, text, fcolor=(255, 255, 255)):
 
 
 def main1():
-    global s_just_one
+    global s_just_one, y_new, x_new
     gun_sound = pygame.mixer.Sound("data/落子音效.mp3")  # 人人模式落子音乐
     gun_sound.set_volume(4)  # 设置落子音效的音量
     win_sound = pygame.mixer.Sound("data/victory.mp3")  # 最终胜利时的音效
@@ -148,6 +154,10 @@ def main1():
                                     cur_runner = _get_next(cur_runner)
                                     computer.get_opponent_drop(click_point)
                                     AI_point = computer.AI_drop()
+                                    x=AI_point.X
+                                    y=AI_point.Y
+                                    x_new=list1[y*19+x][1]
+                                    y_new=list1[y*19+x][0]
                                     winner = checkerboard.drop(cur_runner, AI_point)
                                     if winner is not None:
                                         white_win_count += 1
@@ -169,10 +179,11 @@ def main1():
                     _draw_chessman(screen, Point(j, i), WHITE_CHESSMAN.Color)
 
         # _draw_left_info(screen, font1, cur_runner, black_win_count, white_win_count)
+        pygame.draw.circle(screen,pygame.Color('red'),(x_new,y_new),20,3)
 
         if winner and s_just_one == 1:
             s_just_one = 0
-            url = QUrl.fromLocalFile(r"data/victory.mp3")
+            url = QUrl.fromLocalFile(r"版本2.0的数据文件/victory.mp3")
             content = QMediaContent(url)
             player = QMediaPlayer()
             player.setMedia(content)  # 游戏胜利音效
@@ -184,7 +195,7 @@ def main1():
                               "min-height:80px; "
                               "font-size:22px;"
                               "}")
-            box.setIconPixmap(QPixmap(r"data/奖杯，胜利，赢了，完成，比赛.png").scaled(50, 50))
+            box.setIconPixmap(QPixmap(r"版本2.0的数据文件/奖杯，胜利，赢了，完成，比赛.png").scaled(50, 50))
             if winner == "白子":
                 winner = '白棋'
             if winner == "黑子":
@@ -209,7 +220,7 @@ def _get_next(cur_runner):
 # 画棋盘
 def _draw_checkerboard(screen):
     # 填充棋盘背景色
-    bg = pygame.image.load(r"版本2.0的数据文件/1.jp.jpg")
+    bg = pygame.image.load(r"版本2.0的数据文件\22.jpg")
     screen.blit(bg, (0, 0))
     #screen.fill(Checkerboard_Color)
     # 画棋盘网格线外的边框
@@ -461,7 +472,7 @@ class AI:
 
 def yinyue():
     import pygame  # 导入pygame资源包
-    file1 = r'data/bgm.mp3'  # 音乐的路径
+    file1 = r'版本2.0的数据文件/bgm.mp3'  # 音乐的路径
     pygame.mixer.init()  # 初始化
     track = pygame.mixer.music.load(file1)  # 加载音乐文件
     pygame.mixer.music.play()  # 开始播放音乐流
